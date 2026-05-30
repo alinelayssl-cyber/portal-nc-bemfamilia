@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal NC – Bem Família</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g:#00b37e;--gd:#006644;--gl:#e6f9f2;
+  --r:#e03131;--rl:#fff0f0;
+  --a:#e8890c;--al:#fff8e1;
+  --p:#553c9a;--pl:#f0f0ff;
+  --b:#1971c2;--bl:#e8f4fd;
+  --bg:#f0f4f3;--w:#fff;
+  --tx:#1a2e2a;--ts:#4a6b60;--bd:#c8ddd7;
+  --sh:0 4px 24px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;}
+
+/* ── LOGIN ─────────────────────────────────────────── */
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0d1f1a,#1a3a2e);padding:20px;}
+.lbox{background:#fff;border-radius:22px;padding:38px 32px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:fu .4s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.lbox-logo{text-align:center;margin-bottom:28px;}
+.lbox-logo .lico{font-size:40px;display:block;margin-bottom:12px;}
+.lbox-logo h1{font-size:22px;font-weight:700;color:var(--tx);margin-bottom:4px;}
+.lbox-logo p{font-size:13px;color:var(--ts);}
+.lf{margin-bottom:12px;}
+.lf label{display:block;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--ts);margin-bottom:6px;font-family:'JetBrains Mono',monospace;}
+.lf select,.lf input{width:100%;padding:11px 14px;border:1.5px solid var(--bd);border-radius:10px;font-family:'Sora',sans-serif;font-size:13.5px;color:var(--tx);background:#f8fbfa;outline:none;transition:border-color .2s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%2300b37e' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:15px;padding-right:32px;cursor:pointer;}
+.lf input[type="password"]{background-image:none;padding-right:14px;letter-spacing:2px;}
+.lf select:focus,.lf input:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(0,179,126,.15);}
+.btn-login{width:100%;padding:13px;background:linear-gradient(135deg,var(--g),var(--gd));border:none;border-radius:11px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-top:4px;transition:all .2s;box-shadow:0 4px 14px rgba(0,179,126,.3);}
+.btn-login:hover{transform:translateY(-1px);}
+.lerr{background:#fff0f0;border:1px solid #fecaca;border-radius:9px;padding:9px 13px;font-size:12.5px;color:#c53030;margin-top:9px;display:none;text-align:center;}
+.lerr.show{display:block;}
+.lhint{font-size:11px;color:var(--ts);text-align:center;margin-top:12px;line-height:1.5;}
+
+/* ── PORTAL ─────────────────────────────────────────── */
+#portal{display:none;}
+header{background:linear-gradient(135deg,var(--gd),var(--g));padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.h-left .htag{display:inline-block;background:rgba(255,255,255,.18);color:#fff;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:4px;font-family:'JetBrains Mono',monospace;}
+.h-left h1{color:#fff;font-size:17px;font-weight:700;}
+.h-left p{color:rgba(255,255,255,.72);font-size:12px;margin-top:2px;}
+.h-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.ubadge{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:50px;padding:5px 12px;font-size:12px;font-weight:600;color:#fff;}
+.btn-sm{padding:6px 12px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:8px;color:#fff;font-size:12px;cursor:pointer;font-family:'Sora',sans-serif;transition:all .2s;white-space:nowrap;}
+.btn-sm:hover{background:rgba(255,255,255,.25);}
+.btn-sm.ativo{background:rgba(255,255,255,.35);font-weight:700;}
+
+/* ── TABS ────────────────────────────────────────────── */
+.tabs-nav{background:rgba(0,0,0,.12);display:flex;border-bottom:1px solid rgba(255,255,255,.1);}
+.tab-btn{padding:12px 18px;border:none;background:transparent;color:rgba(255,255,255,.65);font-family:'Sora',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;}
+.tab-btn:hover{color:#fff;}
+.tab-btn.active{color:#fff;border-bottom-color:#fff;font-weight:700;}
+
+/* ── SYNC ────────────────────────────────────────────── */
+.sbar{display:flex;align-items:center;justify-content:space-between;padding:7px 20px;background:var(--gd);color:#fff;font-size:11px;font-family:'JetBrains Mono',monospace;flex-wrap:wrap;gap:6px;}
+.sbar-l{display:flex;align-items:center;gap:7px;}
+.sd{width:7px;height:7px;border-radius:50%;background:#2ecc71;flex-shrink:0;}
+.sbar.loading .sd{background:#fdcb6e;animation:pulse 1s infinite;}
+.sbar.error .sd{background:#e74c3c;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.btn-reload{padding:4px 12px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);border-radius:6px;color:#fff;font-size:11px;cursor:pointer;font-family:'Sora',sans-serif;}
+
+/* ── KPIs ────────────────────────────────────────────── */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;padding:16px 16px 0;max-width:1000px;margin:0 auto;}
+.kpi{background:var(--w);border-radius:13px;padding:14px;box-shadow:var(--sh);border:1px solid rgba(200,221,215,.5);text-align:center;}
+.kpi-v{font-size:26px;font-weight:700;font-family:'JetBrains Mono',monospace;margin-bottom:3px;}
+.kpi-l{font-size:10px;color:var(--ts);font-weight:600;letter-spacing:.5px;}
+.kpi.danger .kpi-v{color:var(--r);}
+.kpi.warn   .kpi-v{color:var(--a);}
+.kpi.good   .kpi-v{color:var(--g);}
+.kpi.info   .kpi-v{color:var(--b);}
+.kpi.purple .kpi-v{color:var(--p);}
+
+/* ── FILTROS ─────────────────────────────────────────── */
+.filters-bar{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px;max-width:1000px;margin:0 auto;align-items:flex-end;}
+.fg-f{display:flex;flex-direction:column;gap:4px;}
+.fg-f label{font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--ts);font-family:'JetBrains Mono',monospace;}
+.fg-f select,.fg-f input{padding:7px 28px 7px 10px;background:var(--w);border:1.5px solid var(--bd);border-radius:9px;font-family:'Sora',sans-serif;font-size:12px;color:var(--tx);outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%2300b37e' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;background-size:13px;cursor:pointer;transition:border-color .2s;}
+.fg-f input[type="date"]{background-image:none;padding-right:10px;}
+.fg-f select:focus,.fg-f input:focus{border-color:var(--g);}
+.btn-limpar{padding:7px 13px;background:transparent;border:1.5px solid var(--bd);border-radius:9px;font-family:'Sora',sans-serif;font-size:12px;color:var(--ts);cursor:pointer;transition:all .2s;align-self:flex-end;}
+.btn-limpar:hover{border-color:var(--r);color:var(--r);}
+
+/* ── MAIN ────────────────────────────────────────────── */
+.tab-content{display:none;}
+.tab-content.active{display:block;animation:fu .25s ease;}
+main{padding:12px 16px 60px;max-width:1000px;margin:0 auto;}
+
+/* ── NC CARD ─────────────────────────────────────────── */
+.nc-card{background:var(--w);border-radius:15px;margin-bottom:12px;box-shadow:var(--sh);border:1px solid rgba(200,221,215,.5);overflow:hidden;}
+.nc-card.vencido{border-color:#c5b8f7;}
+.nc-card.resolvido{border-color:#a8dfc8;}
+.nc-head{padding:14px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;cursor:pointer;transition:background .15s;}
+.nc-head:hover{background:#f8fbfa;}
+.nc-id-tag{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--g);font-weight:700;margin-bottom:3px;}
+.nc-meta{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--ts);margin-bottom:3px;}
+.nc-title{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px;}
+.nc-desc-preview{font-size:12px;color:var(--ts);line-height:1.4;}
+.nc-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+.badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600;font-family:'JetBrains Mono',monospace;display:inline-block;white-space:nowrap;}
+.b-alta{background:var(--rl);color:#c53030;}
+.b-media{background:var(--al);color:#744210;}
+.b-baixa{background:var(--gl);color:#276749;}
+.b-resolvido{background:var(--gl);color:#276749;}
+.b-andamento{background:var(--al);color:#744210;}
+.b-pendente{background:var(--rl);color:#c53030;}
+.b-vencido{background:var(--pl);color:#553c9a;}
+.b-escalado{background:var(--pl);color:#553c9a;}
+.chevron{font-size:14px;color:var(--ts);transition:transform .25s;flex-shrink:0;margin-top:2px;}
+.nc-card.open .chevron{transform:rotate(180deg);}
+
+.nc-body{border-top:1px solid #eef3f1;display:none;}
+.nc-body.open{display:block;animation:fu .2s ease;}
+
+/* ── DETALHE NC ──────────────────────────────────────── */
+.nc-detalhe{padding:14px 16px;}
+.det-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.det-item{background:#f8fbfa;border-radius:9px;padding:9px 12px;}
+.det-label{font-size:9px;color:var(--ts);font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:2px;}
+.det-val{font-size:13px;font-weight:600;color:var(--tx);}
+.det-desc{background:#f8fbfa;border-radius:9px;padding:11px 13px;margin-bottom:14px;font-size:13px;color:var(--tx);line-height:1.5;}
+
+/* ── TRATATIVA REGISTRADA ────────────────────────────── */
+.trat-box{border-radius:12px;padding:13px 15px;margin-bottom:12px;}
+.trat-box.res{background:#e6f9f2;border:1px solid #a8dfc8;}
+.trat-box.and{background:#fff8e1;border:1px solid #f6d860;}
+.trat-box.pend{background:#fff0f0;border:1px dashed #fecaca;}
+.trat-box.venc{background:#f0f0ff;border:1px solid #c5b8f7;}
+.trat-box-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+.trat-box.res .trat-box-title{color:var(--gd);}
+.trat-box.and .trat-box-title{color:#744210;}
+.trat-box.pend .trat-box-title{color:#c53030;}
+.trat-box.venc .trat-box-title{color:var(--p);}
+.trat-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.ti .ti-l{font-size:9px;color:var(--ts);font-family:'JetBrains Mono',monospace;text-transform:uppercase;margin-bottom:2px;}
+.ti .ti-v{font-size:12px;font-weight:600;color:var(--tx);}
+.trat-texto{font-size:12.5px;color:var(--ts);line-height:1.5;padding-top:9px;border-top:1px dashed var(--bd);}
+.aguardando{padding:11px 13px;background:#f8fbfa;border:1px dashed var(--bd);border-radius:10px;font-size:12px;color:var(--ts);display:flex;align-items:center;gap:7px;margin-bottom:12px;}
+
+/* ── FORM TRATATIVA ──────────────────────────────────── */
+.form-trat{background:#fafcfb;border:1.5px solid var(--bd);border-radius:12px;padding:15px;}
+.form-trat h4{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;color:var(--tx);margin-bottom:13px;}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:10px;}
+.fg label{font-size:9px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--ts);font-family:'JetBrains Mono',monospace;}
+.fg input,.fg select,.fg textarea{padding:10px 13px;border:1.5px solid var(--bd);border-radius:9px;font-family:'Sora',sans-serif;font-size:13px;color:var(--tx);background:#fff;outline:none;transition:border-color .2s;appearance:none;}
+.fg select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%2300b37e' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:14px;padding-right:28px;cursor:pointer;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(0,179,126,.1);}
+.fg textarea{resize:vertical;min-height:78px;}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.btn-save{width:100%;padding:12px;background:linear-gradient(135deg,var(--g),var(--gd));border:none;border-radius:10px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;transition:all .2s;box-shadow:0 3px 10px rgba(0,153,102,.3);margin-top:4px;}
+.btn-save:hover{transform:translateY(-1px);}
+.btn-save:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+.btn-toggle-form{padding:7px 14px;border:1px solid var(--bd);border-radius:8px;background:transparent;font-family:'Sora',sans-serif;font-size:12px;font-weight:600;color:var(--ts);cursor:pointer;transition:all .2s;margin-top:10px;display:inline-flex;align-items:center;gap:5px;}
+.btn-toggle-form:hover{border-color:var(--g);color:var(--g);}
+.btn-responder{display:flex;align-items:center;gap:8px;width:100%;padding:12px 16px;background:linear-gradient(135deg,var(--g),var(--gd));border:none;border-radius:10px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-bottom:12px;transition:all .2s;box-shadow:0 3px 10px rgba(0,153,102,.25);justify-content:center;}
+.btn-responder:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(0,153,102,.35);}
+
+/* ── VISÃO GERAL: SETOR CARDS ────────────────────────── */
+.setor-resumo{background:var(--w);border-radius:14px;margin-bottom:12px;box-shadow:var(--sh);border:1px solid rgba(200,221,215,.5);overflow:hidden;}
+.setor-resumo-head{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;transition:background .15s;}
+.setor-resumo-head:hover{background:#f8fbfa;}
+.setor-resumo-nome{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.setor-resumo-stats{display:flex;gap:6px;flex-wrap:wrap;}
+.mini-badge{padding:2px 9px;border-radius:14px;font-size:10px;font-weight:600;font-family:'JetBrains Mono',monospace;}
+.mb-pend{background:var(--rl);color:#c53030;}
+.mb-and{background:var(--al);color:#744210;}
+.mb-res{background:var(--gl);color:#276749;}
+.mb-venc{background:var(--pl);color:#553c9a;}
+.setor-resumo-body{display:none;border-top:1px solid #eef3f1;padding:12px 16px;}
+.setor-resumo-body.open{display:block;}
+
+/* ── EMPTY / SPIN ────────────────────────────────────── */
+.empty{text-align:center;padding:48px 20px;color:var(--ts);}
+.empty span{font-size:40px;display:block;margin-bottom:12px;}
+.spin{width:24px;height:24px;border:3px solid var(--bd);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;margin:24px auto;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── TOAST ───────────────────────────────────────────── */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--gd);color:#fff;padding:10px 22px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.2);transition:transform .3s;z-index:999;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.err{background:var(--r);}
+
+@media(max-width:600px){
+  .det-grid,.trat-info-grid,.fg2{grid-template-columns:1fr;}
+  .kpis{grid-template-columns:repeat(3,1fr);}
+  .filters-bar{flex-direction:column;align-items:stretch;}
+  .fg-f select,.fg-f input{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══════════════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="lbox">
+    <div class="lbox-logo">
+      <span class="lico">🏥</span>
+      <h1>Portal NC – Bem Família</h1>
+      <p>Acesso por setor ou visão geral</p>
+    </div>
+
+    <div class="lf">
+      <label>Perfil de Acesso</label>
+      <select id="lPerfil" onchange="atualizarCampoSetor()">
+        <option value="">Selecione o perfil...</option>
+        <option value="visao_geral">👁 Visão Geral (todos os setores)</option>
+        <option value="setor">🔧 Setor (responder tratativas)</option>
+      </select>
+    </div>
+
+    <div id="campoSetor" style="display:none;">
+      <div class="lf">
+        <label>Seu Setor</label>
+        <select id="lSetor">
+          <option value="">Selecione...</option>
+          <option value="comercial">🛒 Comercial</option>
+          <option value="medico">🩺 Parte Médica</option>
+          <option value="qualidade">⭐ Qualidade</option>
+          <option value="processos">⚙️ Processos e Sistema</option>
+          <option value="financeiro">💰 Financeiro</option>
+          <option value="callcenter">📞 Call Center</option>
+          <option value="outro">📝 Outro</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="lf">
+      <label>Seu Nome</label>
+      <input type="text" id="lNome" placeholder="Nome completo" />
+    </div>
+    <div class="lf">
+      <label>Senha</label>
+      <input type="password" id="lSenha" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()" />
+    </div>
+    <button class="btn-login" onclick="login()">Entrar →</button>
+    <div class="lerr" id="lerr">Credenciais inválidas. Tente novamente.</div>
+    <div class="lhint">
+      Visão Geral: <strong>BF@Master2024</strong><br>
+      Setores: BF@Com2024 / BF@Med2024 / BF@Qua2024<br>
+      BF@Pro2024 / BF@Fin2024 / BF@Cal2024 / BF@Out2024
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PORTAL ═══════════════════════════════════════════ -->
+<div id="portal">
+
+  <header>
+    <div class="h-left">
+      <div class="htag">Bem Família · Portal NC</div>
+      <h1 id="hTitle">–</h1>
+      <p id="hSub">–</p>
+    </div>
+    <div class="h-right">
+      <div class="ubadge" id="uBadge">–</div>
+      <button class="btn-sm" onclick="carregar()">↻ Atualizar</button>
+      <button class="btn-sm" onclick="logout()">Sair</button>
+    </div>
+  </header>
+
+  <!-- Tabs: só aparecem no modo visão geral -->
+  <div class="tabs-nav" id="tabsNav" style="display:none;">
+    <button class="tab-btn active" onclick="switchTab('visao',this)">👁 Visão Geral</button>
+    <button class="tab-btn" onclick="switchTab('setor',this)">📋 Por Setor</button>
+  </div>
+
+  <div class="sbar" id="sbar">
+    <div class="sbar-l"><div class="sd"></div><span id="sbarMsg">Carregando...</span></div>
+    <button class="btn-reload" onclick="carregar()">↻ Atualizar</button>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpis" id="kpisEl"></div>
+
+  <!-- Filtros globais (visão geral) -->
+  <div class="filters-bar" id="filtrosGeral" style="display:none;">
+    <div class="fg-f">
+      <label>Setor</label>
+      <select id="fSetor" onchange="renderVisaoGeral()">
+        <option value="">Todos</option>
+        <option value="comercial">🛒 Comercial</option>
+        <option value="medico">🩺 Parte Médica</option>
+        <option value="qualidade">⭐ Qualidade</option>
+        <option value="processos">⚙️ Processos</option>
+        <option value="financeiro">💰 Financeiro</option>
+        <option value="callcenter">📞 Call Center</option>
+        <option value="outro">📝 Outro</option>
+      </select>
+    </div>
+    <div class="fg-f">
+      <label>Status da NC</label>
+      <select id="fStatus" onchange="renderVisaoGeral()">
+        <option value="">Todos</option>
+        <option value="pendente">❌ Pendente</option>
+        <option value="em_andamento">⏳ Em andamento</option>
+        <option value="resolvido">✅ Resolvido</option>
+        <option value="vencido">⚠️ Vencido</option>
+      </select>
+    </div>
+    <div class="fg-f">
+      <label>Data inicial</label>
+      <input type="date" id="fDataIni" onchange="renderVisaoGeral()" />
+    </div>
+    <div class="fg-f">
+      <label>Data final</label>
+      <input type="date" id="fDataFim" onchange="renderVisaoGeral()" />
+    </div>
+    <div class="fg-f">
+      <label>Responsável</label>
+      <input type="text" id="fResp" placeholder="Nome..." oninput="renderVisaoGeral()" style="background-image:none;padding-right:10px;min-width:130px;" />
+    </div>
+    <div class="fg-f">
+      <label>Tratativa</label>
+      <select id="fTrat" onchange="renderVisaoGeral()">
+        <option value="">Todas</option>
+        <option value="respondida">✅ Respondida</option>
+        <option value="pendente_trat">⏳ Pendente</option>
+      </select>
+    </div>
+    <button class="btn-limpar" onclick="limparFiltros()">✕ Limpar</button>
+  </div>
+
+  <!-- Filtros do setor (modo setor individual) -->
+  <div class="filters-bar" id="filtrosSetor" style="display:none;">
+    <div class="fg-f">
+      <label>Status</label>
+      <select id="fStSetor" onchange="renderNCsSetor()">
+        <option value="">Todos</option>
+        <option value="pendente">❌ Pendente</option>
+        <option value="em_andamento">⏳ Em andamento</option>
+        <option value="resolvido">✅ Resolvido</option>
+        <option value="vencido">⚠️ Vencido</option>
+      </select>
+    </div>
+    <div class="fg-f">
+      <label>Severidade</label>
+      <select id="fSevSetor" onchange="renderNCsSetor()">
+        <option value="">Todas</option>
+        <option value="Alta">🔴 Alta</option>
+        <option value="Média">🟡 Média</option>
+        <option value="Baixa">🟢 Baixa</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Conteúdo das tabs -->
+  <div class="tab-content active" id="tab-visao">
+    <main><div id="visaoList"><div class="spin"></div></div></main>
+  </div>
+  <div class="tab-content" id="tab-setor">
+    <main><div id="setorList"><div class="spin"></div></div></main>
+  </div>
+
+  <!-- Modo setor (não usa tabs) -->
+  <div id="modoSetor" style="display:none;">
+    <main><div id="ncListSetor"><div class="spin"></div></div></main>
+  </div>
+
+</div><!-- /portal -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  CONFIG
+// ═══════════════════════════════════════════════════════
+const API = 'https://script.google.com/macros/s/AKfycbz_PUN5kAWcrfaMwMepuEOf9EBwLwKhLPGiN93jjTWnPhrZM-Oj43lhz33tBMnhrroL/exec';
+
+// ── Formatação de datas — aceita ISO, timestamp, dd/mm/aaaa, dd/mm/aaaa HH:mm ──
+function parseDateSafe(v) {
+  if(!v || v === 'null' || v === 'undefined') return null;
+  const s = String(v).trim();
+  if(!s) return null;
+  // Já é número (timestamp ms)
+  if(/^\d{10,}$/.test(s)) { const d=new Date(Number(s)); return isNaN(d)?null:d; }
+  // ISO: 2024-01-15 ou 2024-01-15T10:30:00...
+  if(/^\d{4}-\d{2}-\d{2}/.test(s)) {
+    // Evita problema de timezone: para datas sem horário, adiciona T12:00:00
+    const iso = s.length===10 ? s+'T12:00:00' : s;
+    const d=new Date(iso); return isNaN(d)?null:d;
+  }
+  // dd/mm/aaaa ou dd/mm/aaaa HH:mm
+  const m1 = s.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:[\sT](\d{2}):(\d{2}))?/);
+  if(m1) {
+    const [,dd,mm,yyyy,hh='12',mi='00'] = m1;
+    const d = new Date(`${yyyy}-${mm}-${dd}T${hh}:${mi}:00`);
+    return isNaN(d)?null:d;
+  }
+  // Tenta genérico
+  const d=new Date(s); return isNaN(d)?null:d;
+}
+
+function fmtData(v) {
+  const d = parseDateSafe(v);
+  if(!d) return 'Data não informada';
+  return d.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit', year:'numeric'});
+}
+
+function fmtHora(v) {
+  const d = parseDateSafe(v);
+  if(!d) return 'Data não informada';
+  return d.toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
+}
+
+function hoje() { return new Date().toISOString().split('T')[0]; }
+
+const SENHAS = {
+  master:'BF@Master2024',
+  setores:{comercial:'BF@Com2024',medico:'BF@Med2024',qualidade:'BF@Qua2024',processos:'BF@Pro2024',financeiro:'BF@Fin2024',callcenter:'BF@Cal2024',outro:'BF@Out2024'}
+};
+const SNOMES = {comercial:'🛒 Comercial',medico:'🩺 Parte Médica',qualidade:'⭐ Qualidade',processos:'⚙️ Processos e Sistema',financeiro:'💰 Financeiro',callcenter:'📞 Call Center',outro:'📝 Outro'};
+const ST = {
+  resolvido:   {txt:'✅ Resolvido',          cls:'b-resolvido',tcls:'res', bg:'#e6f9f2',cor:'#276749'},
+  em_andamento:{txt:'⏳ Em andamento',       cls:'b-andamento',tcls:'and', bg:'#fff8e1',cor:'#744210'},
+  em_tratativa:{txt:'🔄 Em tratativa',       cls:'b-andamento',tcls:'and', bg:'#fff8e1',cor:'#744210'},
+  escalado:    {txt:'🔺 Escalado p/ gestão', cls:'b-vencido',  tcls:'venc',bg:'#f0f0ff',cor:'#553c9a'},
+  pendente:    {txt:'❌ Pendente',            cls:'b-pendente', tcls:'pend',bg:'#fff0f0',cor:'#c53030'},
+  vencido:     {txt:'⚠️ Vencido',            cls:'b-vencido',  tcls:'venc',bg:'#f0f0ff',cor:'#553c9a'},
+};
+
+let me = null;        // {perfil, setor?, nome, senha}
+let allNCs = [];      // todas as NCs (visão geral) ou NCs do setor
+let allTrats = [];    // todas as tratativas
+let tratMap = {};     // NC_ID → tratativa
+
+// ── API helpers ───────────────────────────────────────────────────
+async function apiGet(params) {
+  const qs = Object.entries(params).map(([k,v])=>k+'='+encodeURIComponent(v)).join('&');
+  const r = await fetch(API+'?'+qs+'&t='+Date.now(), {redirect:'follow'});
+  const txt = await r.text();
+  try { return JSON.parse(txt); }
+  catch(e) { console.error('[API] resposta não-JSON:', txt.slice(0,200)); throw new Error('Resposta inválida da API'); }
+}
+async function apiSend(acao, payload) {
+  console.log('[apiSend]', acao, payload);
+  const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+  const res = await apiGet({ acao, data: b64 });
+  console.log('[apiSend] resultado', res);
+  return res;
+}
+
+// hoje() definida acima
+function fmtData(v){ return v ? new Date(String(v)+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'}) : '–'; }
+function fmtHora(v){ if(!v) return '–'; try{ return new Date(v).toLocaleString('pt-BR'); }catch{ return String(v); } }
+
+function calcStatus(n){
+  const t = tratMap[n.NC_ID];
+  if(!t) return 'pendente';
+  if(t.Status_Tratativa==='resolvido') return 'resolvido';
+  if(t.Prazo && t.Prazo < hoje()) return 'vencido';
+  return t.Status_Tratativa || 'pendente';
+}
+function buildTratMap(trats){
+  const m = {};
+  trats.forEach(t => { m[String(t.NC_ID)] = t; });
+  return m;
+}
+
+// ── LOGIN ─────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  const s = sessionStorage.getItem('bf_portal_me');
+  if(s){ me=JSON.parse(s); showPortal(); carregar(); }
+});
+
+function atualizarCampoSetor(){
+  const perfil = document.getElementById('lPerfil').value;
+  document.getElementById('campoSetor').style.display = perfil==='setor' ? 'block' : 'none';
+}
+
+function login(){
+  const perfil = document.getElementById('lPerfil').value;
+  const setor  = document.getElementById('lSetor').value;
+  const nome   = document.getElementById('lNome').value.trim();
+  const senha  = document.getElementById('lSenha').value;
+  const lerr   = document.getElementById('lerr');
+  lerr.classList.remove('show');
+
+  if(!perfil||!nome||!senha){ lerr.textContent='Preencha todos os campos.'; lerr.classList.add('show'); return; }
+  if(perfil==='setor'&&!setor){ lerr.textContent='Selecione o setor.'; lerr.classList.add('show'); return; }
+
+  // Valida senha localmente antes de fazer chamada
+  if(perfil==='visao_geral' && senha!==SENHAS.master){ lerr.classList.add('show'); return; }
+  if(perfil==='setor' && SENHAS.setores[setor]!==senha){ lerr.classList.add('show'); return; }
+
+  me = { perfil, setor: perfil==='setor'?setor:null, nome, senha };
+  sessionStorage.setItem('bf_portal_me', JSON.stringify(me));
+  showPortal();
+  carregar();
+}
+
+function logout(){
+  sessionStorage.removeItem('bf_portal_me');
+  me=null;
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('portal').style.display='none';
+  document.getElementById('lSenha').value='';
+}
+
+function showPortal(){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('portal').style.display='block';
+
+  if(me.perfil==='visao_geral'){
+    document.getElementById('hTitle').textContent = '👁 Visão Geral das NCs';
+    document.getElementById('hSub').textContent   = 'Todos os setores · '+me.nome;
+    document.getElementById('tabsNav').style.display='flex';
+    document.getElementById('filtrosGeral').style.display='flex';
+    document.getElementById('filtrosSetor').style.display='none';
+    document.getElementById('tab-visao').classList.add('active');
+    document.getElementById('tab-setor').classList.remove('active');
+    document.getElementById('modoSetor').style.display='none';
+  } else {
+    document.getElementById('hTitle').textContent = SNOMES[me.setor]||me.setor;
+    document.getElementById('hSub').textContent   = 'Não conformidades do seu setor';
+    document.getElementById('tabsNav').style.display='none';
+    document.getElementById('filtrosGeral').style.display='none';
+    document.getElementById('filtrosSetor').style.display='flex';
+    document.getElementById('tab-visao').classList.remove('active');
+    document.getElementById('tab-setor').classList.remove('active');
+    document.getElementById('modoSetor').style.display='block';
+  }
+  document.getElementById('uBadge').textContent = me.nome;
+}
+
+function switchTab(id, btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+}
+
+// ── CARREGAR ──────────────────────────────────────────────────────
+async function carregar(){
+  setSbar('loading','Carregando...');
+  try{
+    let params;
+    if(me.perfil==='visao_geral'){
+      params = {acao:'listar', perfil:'master', senha:SENHAS.master};
+    } else {
+      params = {acao:'listar', perfil:'setor', setor:me.setor, senha:me.senha};
+    }
+    const d = await apiGet(params);
+    if(!d.ok){ setSbar('error','Erro: '+d.msg); return; }
+    allNCs   = d.ncs        || [];
+    allTrats = d.tratativas || [];
+    tratMap  = buildTratMap(allTrats);
+    const ts = new Date().toLocaleTimeString('pt-BR');
+    setSbar('ok', `${allNCs.length} NC(s) · ${allTrats.length} tratativa(s) · ${ts}`);
+    renderKPIs();
+    if(me.perfil==='visao_geral'){ renderVisaoGeral(); renderPorSetor(); }
+    else { renderNCsSetor(); }
+  }catch(e){ setSbar('error','Falha: '+e.message); console.error(e); }
+}
+
+function setSbar(s,m){
+  const b=document.getElementById('sbar');
+  b.className='sbar'+(s==='loading'?' loading':s==='error'?' error':'');
+  document.getElementById('sbarMsg').textContent=m;
+}
+
+// ── KPIs ──────────────────────────────────────────────────────────
+function renderKPIs(){
+  const total=allNCs.length;
+  let pend=0,and=0,res=0,venc=0;
+  allNCs.forEach(n=>{
+    const st=calcStatus(n);
+    if(st==='resolvido') res++;
+    else if(st==='vencido') venc++;
+    else if(st==='em_andamento') and++;
+    else pend++;
+  });
+  const txRes = total ? Math.round(res/total*100) : 0;
+  document.getElementById('kpisEl').innerHTML=`
+    <div class="kpi danger"><div class="kpi-v">${pend}</div><div class="kpi-l">Pendentes</div></div>
+    <div class="kpi warn"><div class="kpi-v">${and}</div><div class="kpi-l">Em andamento</div></div>
+    <div class="kpi good"><div class="kpi-v">${res}</div><div class="kpi-l">Resolvidas</div></div>
+    <div class="kpi purple"><div class="kpi-v">${venc}</div><div class="kpi-l">Vencidas</div></div>
+    <div class="kpi info"><div class="kpi-v">${total}</div><div class="kpi-l">Total NCs</div></div>
+    <div class="kpi ${txRes>=80?'good':txRes>=50?'warn':'danger'}"><div class="kpi-v">${txRes}<span style="font-size:14px">%</span></div><div class="kpi-l">Resolvidas</div></div>
+  `;
+}
+
+// ── VISÃO GERAL ────────────────────────────────────────────────────
+function getFiltrados(){
+  const fSetor   = document.getElementById('fSetor')?.value   || '';
+  const fStatus  = document.getElementById('fStatus')?.value  || '';
+  const fDataIni = document.getElementById('fDataIni')?.value || '';
+  const fDataFim = document.getElementById('fDataFim')?.value || '';
+  const fResp    = (document.getElementById('fResp')?.value   || '').toLowerCase();
+  const fTrat    = document.getElementById('fTrat')?.value    || '';
+
+  return allNCs.filter(n=>{
+    const st = calcStatus(n);
+    const t  = tratMap[n.NC_ID];
+    const dataStr = String(n.Data||'').slice(0,10);
+    if(fSetor && n.Setor!==fSetor) return false;
+    if(fStatus && st!==fStatus) return false;
+    if(fDataIni && dataStr < fDataIni) return false;
+    if(fDataFim && dataStr > fDataFim) return false;
+    if(fResp){
+      const supervisor = (n.Supervisor||'').toLowerCase();
+      const respondido = (t?.Respondido_Por||'').toLowerCase();
+      if(!supervisor.includes(fResp) && !respondido.includes(fResp)) return false;
+    }
+    if(fTrat==='respondida' && !t) return false;
+    if(fTrat==='pendente_trat' && t) return false;
+    return true;
+  });
+}
+
+function renderVisaoGeral(){
+  const lista = getFiltrados();
+  const el    = document.getElementById('visaoList');
+
+  // Ordena: vencido > pendente > em_andamento > resolvido, depois por data desc
+  const ord={vencido:0,pendente:1,em_andamento:2,resolvido:3};
+  lista.sort((a,b)=>{
+    const sa=calcStatus(a), sb=calcStatus(b);
+    if(ord[sa]!==ord[sb]) return ord[sa]-ord[sb];
+    return String(b.Data||'').localeCompare(String(a.Data||''));
+  });
+
+  if(!lista.length){
+    el.innerHTML='<div class="empty"><span>🔍</span><p>Nenhuma NC encontrada com os filtros selecionados.</p></div>';
+    return;
+  }
+
+  el.innerHTML = lista.map((n,i) => renderNcCard(n, 'vg-'+i, true)).join('');
+}
+
+function renderPorSetor(){
+  const el = document.getElementById('setorList');
+  const setores = [...new Set(allNCs.map(n=>n.Setor))].sort();
+  if(!setores.length){ el.innerHTML='<div class="empty"><span>📭</span><p>Nenhuma NC registrada.</p></div>'; return; }
+
+  el.innerHTML = setores.map(s => {
+    const ncsDoSetor = allNCs.filter(n=>n.Setor===s);
+    let pend=0,and=0,res=0,venc=0;
+    ncsDoSetor.forEach(n=>{
+      const st=calcStatus(n);
+      if(st==='resolvido') res++; else if(st==='vencido') venc++;
+      else if(st==='em_andamento') and++; else pend++;
+    });
+    const ncCards = ncsDoSetor.map((n,i)=>renderNcCard(n,'ps-'+s+'-'+i,true)).join('');
+    return `
+    <div class="setor-resumo">
+      <div class="setor-resumo-head" onclick="toggleSetor(this)">
+        <div class="setor-resumo-nome">${SNOMES[s]||s} <span style="font-size:12px;color:var(--ts);font-weight:400">(${ncsDoSetor.length})</span></div>
+        <div class="setor-resumo-stats">
+          ${pend>0?`<span class="mini-badge mb-pend">❌ ${pend}</span>`:''}
+          ${and>0?`<span class="mini-badge mb-and">⏳ ${and}</span>`:''}
+          ${venc>0?`<span class="mini-badge mb-venc">⚠️ ${venc}</span>`:''}
+          ${res>0?`<span class="mini-badge mb-res">✅ ${res}</span>`:''}
+        </div>
+      </div>
+      <div class="setor-resumo-body">${ncCards}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleSetor(el){ el.nextElementSibling.classList.toggle('open'); }
+
+// ── NCs DO SETOR (modo setor) ──────────────────────────────────────
+function renderNCsSetor(){
+  const fSt  = document.getElementById('fStSetor')?.value  || '';
+  const fSev = document.getElementById('fSevSetor')?.value || '';
+  let lista  = allNCs.map(n=>({...n, _st:calcStatus(n), _trat:tratMap[n.NC_ID]||null}));
+  if(fSt)  lista=lista.filter(n=>n._st===fSt);
+  if(fSev) lista=lista.filter(n=>n.Severidade===fSev);
+  const ord={vencido:0,pendente:1,em_andamento:2,resolvido:3};
+  lista.sort((a,b)=>ord[a._st]-ord[b._st]);
+
+  const el=document.getElementById('ncListSetor');
+  if(!lista.length){
+    el.innerHTML='<div class="empty"><span>🎉</span><p>Nenhuma NC encontrada.</p></div>'; return;
+  }
+  el.innerHTML=lista.map((n,i)=>renderNcCard(n,'setor-'+i,false)).join('');
+}
+
+// ── RENDER NC CARD (genérico) ──────────────────────────────────────
+function renderNcCard(n, uid, soLeitura){
+  const st   = calcStatus(n);
+  const t    = tratMap[String(n.NC_ID)];
+  const cfg  = ST[st]||ST.pendente;
+  const sevCls = n.Severidade==='Alta'?'b-alta':n.Severidade==='Média'?'b-media':'b-baixa';
+  const podeResponder = !soLeitura && me.perfil==='setor';
+
+  return `
+  <div class="nc-card ${st}" id="nc-${uid}">
+    <div class="nc-head" onclick="toggleNC('${uid}')">
+      <div style="flex:1;min-width:0;">
+        <div class="nc-id-tag">${n.NC_ID||'–'}</div>
+        <div class="nc-meta">${fmtData(n.Data)} · ${n.Unidade||'–'} · ${n.Supervisor||'–'}</div>
+        <div class="nc-title">${SNOMES[n.Setor]||n.Setor||'–'}</div>
+        <div class="nc-desc-preview">${(n.Descricao||'–').slice(0,100)}${(n.Descricao||'').length>100?'…':''}</div>
+      </div>
+      <div class="nc-right">
+        ${n.Severidade?`<span class="badge ${sevCls}">${n.Severidade}</span>`:''}
+        <span class="badge ${cfg.cls}">${cfg.txt}</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="nc-body" id="body-${uid}">
+      <div class="nc-detalhe">
+        <div class="det-grid">
+          <div class="det-item"><div class="det-label">ID da NC</div><div class="det-val" style="color:var(--g)">${n.NC_ID||'–'}</div></div>
+          <div class="det-item"><div class="det-label">Data do Registro</div><div class="det-val">${fmtData(n.Data)}</div></div>
+          <div class="det-item"><div class="det-label">Unidade</div><div class="det-val">${n.Unidade||'–'}</div></div>
+          <div class="det-item"><div class="det-label">Supervisor</div><div class="det-val">${n.Supervisor||'–'}</div></div>
+          <div class="det-item"><div class="det-label">Setor</div><div class="det-val">${SNOMES[n.Setor]||n.Setor||'–'}</div></div>
+          <div class="det-item"><div class="det-label">Severidade</div><div class="det-val">${n.Severidade?`<span class="badge ${sevCls}">${n.Severidade}</span>`:'–'}</div></div>
+          <div class="det-item"><div class="det-label">Turno</div><div class="det-val">${n.Turno||'–'}</div></div>
+          <div class="det-item"><div class="det-label">Status</div><div class="det-val"><span class="badge ${cfg.cls}">${cfg.txt}</span></div></div>
+        </div>
+        <div class="det-label" style="margin-bottom:6px">Descrição da Não Conformidade</div>
+        <div class="det-desc">${n.Descricao||'–'}</div>
+        ${n.Acoes_Imediatas?`<div class="det-label" style="margin-bottom:6px">Ações Imediatas</div><div class="det-desc">${n.Acoes_Imediatas.split('|').filter(Boolean).join(' · ')}</div>`:''}
+
+        ${renderBlocoTratativa(t, uid, n.NC_ID, podeResponder)}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderBlocoTratativa(t, uid, ncId, podeResponder){
+  let html = '';
+  if(t){
+    const st  = t.Status_Tratativa||'pendente';
+    const cfg = ST[st]||ST.pendente;
+    html += `
+    <div class="trat-box ${cfg.tcls}">
+      <div class="trat-box-title">
+        <span>📋 Tratativa do Setor</span>
+        <span class="badge ${cfg.cls}">${cfg.txt}</span>
+      </div>
+      <div class="trat-info-grid">
+        <div class="ti"><div class="ti-l">Respondido por</div><div class="ti-v">${t.Respondido_Por||'–'}</div></div>
+        <div class="ti"><div class="ti-l">Data da resposta</div><div class="ti-v">${fmtData(t.Data_Resposta)}</div></div>
+        <div class="ti"><div class="ti-l">Prazo</div><div class="ti-v">${t.Prazo?fmtData(t.Prazo):'–'}</div></div>
+        <div class="ti"><div class="ti-l">Timestamp</div><div class="ti-v" style="font-size:11px">${fmtHora(t.Timestamp)}</div></div>
+      </div>
+      <div class="trat-texto"><strong>Tratativa:</strong> ${t.Tratativa||'–'}</div>
+      ${t.Observacoes?`<div class="trat-texto" style="margin-top:6px"><strong>Obs:</strong> ${t.Observacoes}</div>`:''}
+      ${podeResponder?`<button class="btn-toggle-form" onclick="toggleForm('form-${uid}')">✏️ Atualizar tratativa</button>`:''}
+    </div>`;
+  } else {
+    if(podeResponder){
+      html += `<div class="aguardando">⏳ Nenhuma tratativa respondida ainda.</div>`;
+    } else {
+      html += `<div class="aguardando">⏳ Aguardando resposta do setor responsável.</div>`;
+    }
+  }
+
+  if(podeResponder){
+    // Botão primário visível — abre o formulário
+    if(!t){
+      html += '<button class="btn-responder" onclick="toggleForm(\'form-'+uid+'\')">📝 Responder Tratativa</button>';
+    }
+    html += `
+    <div class="form-trat" id="form-${uid}" style="display:none">
+      <h4>${t?'✏️ Atualizar':'📝 Responder'} Tratativa</h4>
+      <div class="fg2">
+        <div class="fg"><label>Respondido por *</label>
+          <input type="text" id="resp-${uid}" value="${me.nome}" placeholder="Nome" />
+        </div>
+        <div class="fg"><label>Data da resposta</label>
+          <input type="date" id="dr-${uid}" value="${hoje()}" />
+        </div>
+      </div>
+      <div class="fg2">
+        <div class="fg"><label>Status da Tratativa *</label>
+          <select id="st-${uid}">
+            <option value="em_tratativa"  ${t?.Status_Tratativa==='em_tratativa' ?'selected':''}>🔄 Em tratativa</option>
+            <option value="resolvido"     ${t?.Status_Tratativa==='resolvido'    ?'selected':''}>✅ Resolvido</option>
+            <option value="escalado"      ${t?.Status_Tratativa==='escalado'     ?'selected':''}>🔺 Escalado para gestão</option>
+          </select>
+        </div>
+        <div class="fg"><label>Prazo de resolução</label>
+          <input type="date" id="pr-${uid}" value="${t?.Prazo||''}" />
+        </div>
+      </div>
+      <div class="fg"><label>Tratativa *</label>
+        <textarea id="trat-${uid}" placeholder="Descreva o que foi feito ou será feito...">${t?.Tratativa||''}</textarea>
+      </div>
+      <div class="fg"><label>Observações</label>
+        <textarea id="obs-${uid}" placeholder="Observações adicionais..." style="min-height:56px">${t?.Observacoes||''}</textarea>
+      </div>
+      <button class="btn-save" id="btn-${uid}" onclick="salvar('${ncId}','${uid}')">
+        ${t?'↺ Atualizar tratativa':'✓ Salvar Tratativa'}
+      </button>
+    </div>`;
+  }
+  return html;
+}
+
+function toggleNC(uid){
+  const body=document.getElementById('body-'+uid);
+  const card=document.getElementById('nc-'+uid);
+  if(body){ body.classList.toggle('open'); }
+  if(card){ card.classList.toggle('open'); }
+}
+function toggleForm(id){
+  // id pode ser string literal ou 'form-'+uid
+  const el = document.getElementById(id) || document.getElementById('form-'+id);
+  if(el) el.style.display = (el.style.display==='none'||el.style.display==='')?'block':'none';
+}
+
+// ── SALVAR TRATATIVA ──────────────────────────────────────────────
+async function salvar(ncId, uid){
+  const btn  = document.getElementById('btn-'+uid);
+  const resp = document.getElementById('resp-'+uid)?.value?.trim();
+  const dr   = document.getElementById('dr-'+uid)?.value;
+  const st   = document.getElementById('st-'+uid)?.value;
+  const pr   = document.getElementById('pr-'+uid)?.value;
+  const trat = document.getElementById('trat-'+uid)?.value?.trim();
+  const obs  = document.getElementById('obs-'+uid)?.value?.trim();
+
+  if(!resp||!trat){ showToast('⚠ Preencha Respondido por e Tratativa.',true); return; }
+
+  btn.disabled=true; btn.textContent='⏳ Salvando...';
+  console.log('[salvar] nc_id='+ncId, {resp,dr,st,pr,trat,obs});
+
+  const payload={
+    setor:me.setor, senha:me.senha, nc_id:ncId,
+    respondido_por:resp, data_resposta:dr, prazo:pr,
+    tratativa:trat, observacoes:obs, status_tratativa:st,
+  };
+
+  try{
+    const d = await apiSend('salvar_tratativa', payload);
+    if(!d.ok) throw new Error(d.msg||'Erro desconhecido');
+    showToast('✅ Tratativa salva com sucesso!');
+    await carregar();
+  }catch(e){
+    showToast('❌ Erro: '+e.message, true);
+    btn.disabled=false; btn.textContent='Salvar Tratativa';
+  }
+}
+
+// ── FILTROS ────────────────────────────────────────────────────────
+function limparFiltros(){
+  ['fSetor','fStatus','fDataIni','fDataFim','fResp','fTrat'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  renderVisaoGeral();
+}
+
+// ── TOAST ──────────────────────────────────────────────────────────
+function showToast(m,e=false){
+  const t=document.getElementById('toast');
+  t.textContent=m; t.className='toast'+(e?' err':'');
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3500);
+}
+</script>
+</body>
+</html>
